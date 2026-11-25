@@ -1,0 +1,28 @@
+dimension,rule_in_plain_words,column,how_you_measured_it,failing_rows,total_rows,score_pct,severity_high_medium_low,who_should_fix_owner_steward_custodian
+Completeness,email is filled,email,,,,,,
+Uniqueness,customer_id is unique,customer_id,,,,,,
+Validity,,,,,,,,
+Consistency,,,,,,,,
+Accuracy,,,,,,,,
+Timeliness,,,,,,,,
+
+Completeness,email is filled,email,"df['email'].isna().sum()",48,1241,96.13,high,Steward
+Uniqueness,customer_id is unique,customer_id,"df['customer_id'].duplicated(keep=False).sum()",16,1241,98.71,high,Custodian
+Uniqueness,normalized email has no duplicate accounts,email,"df['email'].str.strip().str.lower().dropna().duplicated(keep=False).sum()",120,1241,90.33,medium,Steward
+Validity,email matches standard email syntax,email,"~df['email'].fillna('').str.match(r'^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$')",76,1241,93.88,high,Steward
+Validity,loyalty_tier is in bronze / silver / gold / platinum,loyalty_tier,"~df['loyalty_tier'].str.strip().str.lower().isin({'bronze','silver','gold','platinum'})",4,1241,99.68,low,Owner
+Validity,French postal codes have 5 digits,postal_code,"is_fr & ~df['postal_code'].fillna('').str.strip().str.match(r'^\d{5}$')",45,1241,96.37,medium,Steward
+Consistency,country uses standard ISO-2 code (FR/DE/BE/ES),country,"~df['country'].isin(['FR','DE','BE','ES'])",336,1241,72.93,low,Custodian
+Consistency,signup_date follows ISO format YYYY-MM-DD,signup_date,"~df['signup_date'].fillna('').str.match(r'^\d{4}-\d{2}-\d{2}$')",303,1241,75.58,medium,Custodian
+Accuracy,birth_date is realistic (between 1906-01-01 and today),birth_date,"birth_iso.notna() & ((birth_iso > today) | (birth_iso < '1906-01-01'))",8,1241,99.36,medium,Steward
+
+dimension,rule_in_plain_words,column,how_you_measured_it,failing_rows,total_rows,score_pct,severity_high_medium_low,who_should_fix_owner_steward_custodian
+Uniqueness,order_id is unique,order_id,"GX: expect_column_values_to_be_unique(column='order_id')",14,TOTAL_ORDERS,0.00,high,Custodian
+Consistency,customer_id exists in customers table,customer_id,"GX: expect_column_values_to_be_in_set(column='customer_id', value_set=customers)",14,TOTAL_ORDERS,0.00,high,Custodian
+Completeness,order_date is filled,order_date,"GX: expect_column_values_to_not_be_null(column='order_date')",11,TOTAL_ORDERS,0.00,high,Steward
+Accuracy,order_date_dt is not in the future,order_date_dt,"GX: expect_column_values_to_be_between(column='order_date_dt', max_value=today)",5,TOTAL_ORDERS,0.00,medium,Steward
+Validity,status is in allowed order statuses,status,"GX: expect_column_values_to_be_in_set(column='status', ...)",9,TOTAL_ORDERS,0.00,medium,Owner
+Validity,channel is in allowed channels,channel,"GX: expect_column_values_to_be_in_set(column='channel', ...)",1759,TOTAL_ORDERS,0.00,low,Owner
+Validity,total_amount_eur is strictly positive and below max,total_amount_eur,"GX: expect_column_values_to_be_between(column='total_amount_eur', min_value=0, strict_min=True, max_value=10000)",6,TOTAL_ORDERS,0.00,medium,Steward
+
+

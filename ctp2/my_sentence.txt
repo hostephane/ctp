@@ -1,0 +1,1 @@
+At ShopFast, the missing governance guard was a contract because the payment team switched amount from euros to cents without a contract or range/distribution tests to catch the 100x change
