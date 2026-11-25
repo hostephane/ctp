@@ -1,0 +1,16 @@
+table,column,business_meaning,data_type,unit_or_format,allowed_values_or_range,nullable_Y_N,example_value,personal_data_Y_N,classification,owner,source_system
+stg_orders,order_id,Unique identifier for a customer order,INTEGER,Integer ID,Positive value (>= 1),N,700002,N,internal,Sara Martin,orders_db
+stg_orders,customer_id,Identifier of the customer account placing the order,INTEGER,Integer ID,Positive value (>= 1),N,42,Y,confidential,Sara Martin,orders_db
+stg_orders,order_date,Date or timestamp when the order was placed,DATE,YYYY-MM-DD,Valid historical/current date,N,2026-10-08,N,internal,Sara Martin,orders_db
+stg_orders,status,Order lifecycle status,VARCHAR,Lowercase string,pending / shipped / delivered / cancelled / returned,N,delivered,N,internal,Sara Martin,orders_db
+stg_orders,channel,Sales channel or storefront through which the order was placed,VARCHAR,Lowercase string,web / mobile_app / marketplace / store,Y,web,N,internal,Sara Martin,orders_db
+stg_orders,shipping_country,Country code where the order is shipped,VARCHAR,ISO-3166 alpha-2 (2 uppercase letters),FR / DE / ES / BE (or valid country codes),Y,FR,Y,confidential,Sara Martin,orders_db
+stg_orders,total_amount_eur,Total order amount in euros,DECIMAL / DOUBLE,EUR (2 decimals),>= 0.00,N,217.38,N,confidential,Paul Girard,orders_db
+stg_payments,payment_id,Unique identifier for a payment transaction,INTEGER,Integer ID,Positive value (>= 1),N,900001,N,internal,Claire Dubois,payments_db
+stg_payments,order_id,Foreign key referencing the order paid by this transaction,INTEGER,Integer ID,Positive value (>= 1),N,700002,N,internal,Claire Dubois,payments_db
+stg_payments,payment_date,Date or timestamp when the payment occurred,DATE,YYYY-MM-DD,Valid historical/current date,N,2026-10-08,N,internal,Claire Dubois,payments_db
+stg_payments,method,Payment method used for the transaction,VARCHAR,Lowercase string,apple_pay / bank_transfer / card / paypal,N,apple_pay,N,internal,Claire Dubois,payments_db
+stg_payments,amount,Payment amount in EUROS with 2 decimals,DECIMAL / DOUBLE,EUR (2 decimals),>= 0.00,N,217.38,N,confidential,Claire Dubois,payments_db
+stg_payments,currency,Currency code of the payment transaction,VARCHAR,ISO-4217 (3 uppercase letters),EUR / USD / GBP,N,EUR,N,internal,Claire Dubois,payments_db
+stg_payments,card_last4,Last four digits of the payment card used,VARCHAR,4-digit string (0000-9999),4 digits (0-9) or NULL for non-card,Y,4242,Y,confidential,Claire Dubois,payments_db
+stg_payments,payment_status,Status of the payment transaction,VARCHAR,Lowercase string,authorized / captured / failed / refunded,N,captured,N,internal,Claire Dubois,payments_db

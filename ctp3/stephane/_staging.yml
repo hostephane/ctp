@@ -1,0 +1,125 @@
+version: 2
+
+# CTP 3 - Exercise 1: document and govern the staging models.
+# For each model: description, meta (owner, steward, domain, tier); for each column: description,
+# and for personal data: tags: ['pii'] + meta: {classification: confidential|restricted}.
+
+models:
+  - name: stg_customers
+    description: "One row per customer account, cleaned from raw.customers (exact duplicate rows removed, ISO country codes, ISO dates)."
+    meta:
+      owner: "Sara Martin (Head of Sales)"
+      steward: "Karim Benali (Analytics Engineer)"
+      domain: customer
+      tier: gold
+    config:
+      tags: ['pii']
+    columns:
+      - name: customer_id
+        description: "Technical identifier of the customer account. One person may have several accounts (see duplicates)."
+        data_tests: [unique, not_null]
+      - name: email
+        description: "Login email, trimmed and lower-cased."
+        config:
+          tags: ['pii']
+        meta: {classification: confidential}
+      # TODO: document first_name, last_name, phone, birth_date, city, country_code, signup_date,
+      #       has_marketing_consent, loyalty_tier  (description + pii tag/classification where needed)
+      # TODO: add a test: accepted_values on country_code (FR, DE, ES, BE) and on loyalty_tier
+      - name: first_name
+        description: "Customer first name."
+        config:
+          tags: ['pii']
+        meta: {classification: confidential}
+      - name: last_name
+        description: "Customer last name."
+        config:
+          tags: ['pii']
+        meta: {classification: confidential}
+      - name: phone
+        description: "Customer phone number."
+        config:
+          tags: ['pii']
+        meta: {classification: confidential}
+      - name: birth_date
+        description: "Customer date of birth."
+        config:
+          tags: ['pii']
+        meta: {classification: restricted}
+      - name: city
+        description: "Customer city of residence."
+        config:
+          tags: ['pii']
+        meta: {classification: confidential}
+      - name: country_code
+        description: "Customer ISO country code."
+        data_tests:
+          - accepted_values:
+              values: ['FR', 'DE', 'ES', 'BE']
+      - name: signup_date
+        description: "Customer account creation date."
+      - name: has_marketing_consent
+        description: "Flag indicating marketing opt-in."
+      - name: loyalty_tier
+        description: "Customer loyalty level."
+        data_tests:
+          - accepted_values:
+              values: ['bronze', 'silver', 'gold', 'platinum']
+
+  - name: stg_orders
+    description: "One row per customer order placed on the platform."
+    # TODO: meta owner / steward / domain / tier
+    meta:
+      owner: "Sara Martin (Head of Sales)"
+      steward: "Karim Benali (Analytics Engineer)"
+      domain: sales
+      tier: gold
+    columns:
+      - name: order_id
+        description: "Unique identifier of the order."
+        data_tests: [unique, not_null]
+      # TODO: document customer_id, order_date, status, channel, shipping_country, total_amount_eur
+      # TODO: test accepted_values on status
+      - name: customer_id
+        description: "Foreign key to customer_id."
+      - name: order_date
+        description: "Date when the order was placed."
+      - name: status
+        description: "Current order status."
+        data_tests:
+          - accepted_values:
+              values: ['pending', 'shipped', 'delivered', 'cancelled', 'returned']
+      - name: channel
+        description: "Sales channel of the order."
+      - name: shipping_country
+        description: "Delivery country code."
+      - name: total_amount_eur
+        description: "Total order amount in EUR."
+
+  - name: stg_order_items
+    description: "One row per product line of an order."
+    meta:
+      owner: "Sara Martin (Head of Sales)"
+      steward: "Karim Benali (Analytics Engineer)"
+      domain: sales
+      tier: silver
+
+  - name: stg_payments
+    description: "One row per payment event from the payment provider (captured or refunded)."
+    # TODO: what is the UNIT of amount? Document it - this is the cents incident!
+    meta:
+      owner: "Claire Dubois (Head of Finance)"
+      steward: "Karim Benali (Analytics Engineer)"
+      domain: finance
+      tier: gold
+    columns:
+      - name: amount
+        description: "Payment amount in Euro CENTS (integer, divide by 100 for EUR)."
+
+  - name: stg_products
+    description: "Product catalogue with list prices."
+    meta:
+      owner: "Marc Lefevre (Head of Product)"
+      steward: "Karim Benali (Analytics Engineer)"
+      domain: product
+      tier: silver
